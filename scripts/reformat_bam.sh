@@ -15,12 +15,12 @@
 
 ####################################################################################################
 
-for i in {1..48}
-do
-   reformat.sh in=data/seqs/bioinfo/03_ccs/ccs_lbc$i.bam out=data/seqs/bioinfo/04_fastq/ccs_lbc$i.fastq
-done
-
 for i in {1..9}
 do
-	mv data/seqs/bioinfo/04_fastq/ccs_lbc$i.fastq data/seqs/bioinfo/04_fastq/ccs_lbc0$i.fastq
+   reformat.sh in=data/seqs/bioinfo/03_ccs/ccs_lbc0$i.bam out=data/seqs/bioinfo/04_fastq/ccs_lbc0$i.fastq
+done
+
+for i in {10..48}
+do
+   reformat.sh in=data/seqs/bioinfo/03_ccs/ccs_lbc$i.bam out=data/seqs/bioinfo/04_fastq/ccs_lbc$i.fastq
 done

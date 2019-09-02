@@ -28,6 +28,18 @@ wLSUmBr <- "AACACTCGCAYAYATGYTAGA" # amf reverse primer
 rc <- dada2:::rc
 print("Paths set")
 
+# READ RDS FILES
+# In case you need to pick up where you left off earlier
+#prim <- readRDS(file.path(path_rds_amf, "prim.rds"))
+#track <- readRDS(file.path(path_rds_amf, "track.rds"))
+#drp <- readRDS(file.path(path_rds_amf, "drp.rds"))
+#err <- readRDS(file.path(path_rds_amf, "err.rds"))
+#dd <- readRDS(file.path(path_rds_amf, "dd.rds"))
+#st <- readRDS(file.path(path_rds_amf, "st.rds"))
+#st_nochim <- readRDS(file.path(path_rds_amf, "st_nochim.rds"))
+#tax <- readRDS(file.path(path_rds, "tax.rds"))
+#reten <- readRDS(file.path(path_rds, "reten.rds"))
+
 # VISUALIZE SEQUENCE QUALITY
 # Run if using in R
 #plotQualityProfile(fns[1:6])
@@ -42,7 +54,7 @@ print("Paths set")
 # REMOVE PRIMERS
 # Remove primer sequences and orient reverse sequences in the forward direction
 # Consider relaxing the number of mismatches allowed in removing primers: max.mismatch = 4 
-nops <- file.path(path_fastq, "noprimers", basename(fns_amf))
+nops <- file.path(path_fastq, "noprimers", basename(fns))
 prim <- removePrimers(fns, nops, primer.fwd = wSSUmCf, primer.rev = dada2:::rc(wLSUmBr), orient = TRUE, verbose = TRUE, max.mismatch = 2)
 saveRDS(prim, file.path(path_rds, "prim.rds"))
 print("Primers removed")
@@ -52,7 +64,7 @@ print("Primers removed")
 lens_fn <- lapply(nops, function(fn) nchar(getSequences(fn)))
 lens <- do.call(c, lens_fn)
 hist(lens, 100)
-mean(lens_amf); median(lens_amf)
+mean(lens); median(lens)
 
 # FILTER
 # Consider relaxing the minimum quality and maximum expected errors filtering parameters: minQ = 2, maxEE = 5
@@ -76,8 +88,8 @@ print("Errors learned and relearned")
 
 # DENOISE
 # Infer ASVs (separate true biological sequences from errors)
-dd <- dada(drp, err = err, BAND_SIZE = 32, multithread = TRUE, verbose = TRUE, pool = TRUE)
-saveRDS(dd_amf, file.path(path_rds_amf, "dd.rds"))
+dd <- dada(drp, err = err, BAND_SIZE = 32, multithread = TRUE, verbose = TRUE, pool = "pseudo")
+saveRDS(dd, file.path(path_rds, "dd.rds"))
 print("Sequences denoised")
 
 # SEQUENCE TABLE 
@@ -93,28 +105,20 @@ saveRDS(st_nochim, file.path(path_rds, "st_nochim.rds"))
 print("Chimeras removed")
 
 # TRACK RETAINED SEQUENCES
-#prim <- readRDS(file.path(path_rds_amf, "prim_amf.rds"))
-#track <- readRDS(file.path(path_rds_amf, "track_amf.rds"))
-#dd <- readRDS(file.path(path_rds_amf, "dd_amf.rds"))
-#st_nochim <- readRDS(file.path(path_rds_amf, "st_nochim_amf.rds"))
 reten <- cbind(ccs = prim[,1], primers = prim[,2], filtered = track[,2], denoised = sapply(dd, function(x) sum(x$denoised)), nonchimeric = apply(st_nochim, 1, sum), retained = apply(st_nochim, 1, sum)/prim[,1])
 saveRDS(reten, file.path(path_rds, "reten.rds"))
 print("Retained sequences evaluated")
 
 # ASSIGN TAXONOMY
-tax <- assignTaxonomy(st_nochim, file.path(path_ref, "amf_custom_ref"), multithread = TRUE, verbose = TRUE, tryRC = TRUE)
+tax <- assignTaxonomy(st_nochim, file.path(path_ref, "custom_ref_dada2.fasta"), multithread = TRUE, verbose = TRUE, tryRC = TRUE)
 saveRDS(tax, file.path(path_rds, "tax.rds"))
-
-# READ FILES FOR EXPORTING
-#st_nochim <- readRDS(file.path(path_rds, "st_nochim.rds"))
-#tax <- readRDS(file.path(path_rds, "tax.rds"))
 
 # EXPORT FILES
 # Give our sequence headers more manageable names (ASV_1, ASV_2...)
 asv_seqs <- colnames(st_nochim)
 asv_headers <- vector(dim(st_nochim)[2], mode = "character")
-for (i in 1:dim(st_nochim_amf)[2]) {
-  asv_headers_amf[i] <- paste(">ASV", i, sep = "_")
+for (i in 1:dim(st_nochim)[2]) {
+  asv_headers[i] <- paste(">ASV", i, sep = "_")
 }
 # Making and writing out a FASTA of our final ASV seqs
 asv_fasta <- c(rbind(asv_headers, asv_seqs))

@@ -1,0 +1,29 @@
+ITSx run started at Fri Aug 30 15:06:21 2019.
+-----------------------------------------------------------------
+Number of sequences in input file:       	384
+Sequences detected as ITS by ITSx:	384
+  On main strand:         	384
+  On complementary strand:	0
+Sequences detected as chimeric by ITSx:	0
+ITS sequences by preliminary origin:
+  Alveolates:      	0
+  Amoebozoa:       	0
+  Bacillariophyta: 	0
+  Brown algae:     	0
+  Bryophytes:      	0
+  Euglenozoa:      	0
+  Eustigmatophytes:	0
+  Fungi:           	354
+  Green algae:     	0
+  Liverworts:      	0
+  Metazoa:         	0
+  Microsporidia:   	0
+  Oomycetes:       	0
+  Prymnesiophytes: 	0
+  Raphidophytes:   	0
+  Red algae:       	0
+  Rhizaria:        	0
+  Synurophyceae:   	0
+  Tracheophyta:    	30
+-----------------------------------------------------------------
+ITSx run finished at Fri Aug 30 15:18:51 2019.

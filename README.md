@@ -30,7 +30,7 @@ This third step is only relevant if you downloaded the raw sequence data and wan
 
 ### 3a: Format Files for `DADA2`
 
-PacBio CCS files are returned in BAM format. To process them with `DADA2` in `R` they first need to be converted to FASTQ format with [`BBMap`](https://sourceforge.net/projects/bbmap/) and the quality scores adjusted to the conventional scale.
+PacBio CCS files are returned in BAM format. To process them with `DADA2` in `R` they first need to be converted to FASTQ format with [`BBMap`](https://sourceforge.net/projects/bbmap/) and the quality scores adjusted to the conventional scale. This script must be run on a Linux OS; I used an Ubuntu virutal machine through VirtualBox.
 
 ```
 bash scripts/reformat_bam.sh

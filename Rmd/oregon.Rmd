@@ -1,12 +1,443 @@
 ---
-title: "Effects of N Treatment on AMF Community Composition in WI Switchgrass Cropping Systems"
+title: "Effects of N Addition on AMF Diversity in WI Switchgrass Cropping Systems"
 subtitle: "Oregon"
 author: "Alden Dirks"
-date: "7/21/2019"
+date: "7/26/2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Setup
+
+```{r setup, include = FALSE}
+rm(list = ls()) # clean up environment for new session
 knitr::opts_knit$set(root.dir = '..' ) # set markdown root directory to project root
+knitr::opts_chunk$set(echo = FALSE, fig.path = '../figures/', message = FALSE, results = 'hide', warning = FALSE)
 ```
+
+Load the libraries needed for analysis. `ggpubr` is a package to arrange plots. `lme4` is a standard package for building linear mixed-effects models. `piecewiseSEM` is used to calculate coefficients of determination ($R^2$) for liner mixed-effects models. `tidyverse` is a collection of R packages with the same philosophy and syntax for integrated data science.
+
+```{r libraries, echo = TRUE}
+library("ggpubr"); packageVersion("ggpubr") # version 0.2.2
+library("lme4"); packageVersion("lme4") # version 1.1.21
+library("piecewiseSEM"); packageVersion("piecewiseSEM") # version 2.0.2
+library("tidyverse"); packageVersion("tidyverse") # version 1.2.1
+```
+
+Load the master dataset and subset for Oregon. 
+
+```{r load_data, echo = TRUE}
+path_master = file.path("data")
+master <- read.table(file.path(path_master, "master.csv"), header = TRUE, check.names = FALSE, sep = ",")
+master <- subset(master, site == "Oregon")
+tax <- as.matrix(read.table(file.path(path_master, "seqs", "cleaned", "ASVs_taxonomy.csv"), header = TRUE, row.names = 1, check.names = FALSE, sep = ","))
+```
+
+## Data Visualization
+
+```{r oregon_pie_charts}
+asv_amended <- subset(master, nitrogen == "amended"); asv_amended <- asv_amended[,28:439]
+asv_control <- subset(master, nitrogen == "control"); asv_control <- asv_control[,28:439]
+
+asv_amended <- asv_amended[,unname(colSums(asv_amended) > 0)]
+asv_control <- asv_control[,unname(colSums(asv_control) > 0)]
+
+tax_amended <- tax[row.names(tax) %in% colnames(asv_amended),]
+tax_control <- tax[row.names(tax) %in% colnames(asv_control),]
+
+ggplot(as.data.frame(tax_amended), aes(x = factor(1), fill = Genus)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+ggplot(as.data.frame(tax_control), aes(x = factor(1), fill = Genus)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+
+ggplot(as.data.frame(tax_amended), aes(x = factor(1), fill = Family)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+ggplot(as.data.frame(tax_control), aes(x = factor(1), fill = Family)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+
+ggplot(as.data.frame(tax_amended), aes(x = factor(1), fill = Order)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+ggplot(as.data.frame(tax_control), aes(x = factor(1), fill = Order)) +
+  geom_bar(width = 1) +
+  xlab("") + ylab("") +
+  coord_polar("y")
+```
+
+```{r oregon_boxplots}
+p1 <- ggplot(master, aes(x = nitrogen, y = yield, color = nitrogen)) + 
+  geom_boxplot() +
+  geom_point() +
+  geom_line(aes(group = block), color = "black", alpha = 0.1) + 
+  labs(y = "Yield (Mg/ha)", x = "Nitrogen Treatment") +
+  theme(legend.position = "none", axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+p2 <- ggplot(master, aes(x = nitrogen, y = div_rich, color = nitrogen)) + 
+  geom_boxplot() +
+  geom_point() +
+  geom_line(aes(group = block), color = "black", alpha = 0.1) + 
+  labs(y = "Richness", x = "Nitrogen Treatment") +
+  theme(legend.position = "none", axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+p3 <- ggplot(master, aes(x = nitrogen, y = div_shan, color = nitrogen)) +
+  geom_boxplot() + 
+  geom_point() +
+  geom_line(aes(group = block), color = "black", alpha = 0.1) + 
+  labs(y = "Shanon Index", x = "Nitrogen Treatment") +
+  theme(legend.position = "none")
+p4 <- ggplot(master, aes(x = nitrogen, y = div_simp, color = nitrogen)) +
+  geom_boxplot() +
+  geom_point() +
+  geom_line(aes(group = block), color = "black", alpha = 0.1) + 
+  labs(y = "Simpson's Index", x = "Nitrogen Treatment") +
+  theme(legend.position = "none")
+fig <- ggarrange(p1, p2, p3, p4)
+annotate_figure(fig, top = text_grob("Boxplots of Switchgrass Yield and AMF ASV Diveristy by Nitrogen Treatment"))
+```
+
+```{r oregon_scatterplots}
+p1 <- ggplot(master, aes(x = div_rich, y = yield, color = nitrogen)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", se = FALSE) + 
+  ylim(5, 12) +
+  labs(y = "Yield (Mg/ha)", x = "Richness") +
+  theme(legend.position = "none")
+p2 <- ggplot(master, aes(x = div_shan, y = yield, color = nitrogen)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", se = FALSE) + 
+  ylim(5, 12) + 
+  labs(y = "Yield (Mg/ha)", x = "Shannon Index") +
+  theme(legend.position = "none", axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks=element_blank())
+p3 <- ggplot(master, aes(x = div_simp, y = yield, color = nitrogen)) +
+  geom_point() + 
+  stat_smooth(method = "lm", se = FALSE) + 
+  ylim(5, 12) + 
+  labs(y = "Yield (Mg/ha)", x = "Simpson's Index") +
+  theme(legend.position = "none")
+fig <- ggarrange(p1, p2, p3)
+annotate_figure(fig, top = text_grob("Scatterplots of Switchgrass Yield by AMF ASV Diveristy"))
+```
+
+## Linear Mixed-effects Models with Likelihood Ratio Test
+
+#### Effects of Nitrogen Treatment on Dependent Variables
+
+```{r oregon_lmer_nitrogen}
+# Yield
+lmer_nitrogen_yield_null <- lmer(yield ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_yield <- lmer(yield ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_yield)
+anova(lmer_nitrogen_yield_null, lmer_nitrogen_yield)
+
+# Richness
+lmer_nitrogen_div_rich_null <- lmer(div_rich ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_div_rich <- lmer(div_rich ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_div_rich)
+anova(lmer_nitrogen_div_rich_null, lmer_nitrogen_div_rich)
+
+# Shannon Index
+lmer_nitrogen_div_shan_null <- lmer(div_shan ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_div_shan <- lmer(div_shan ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_div_shan)
+anova(lmer_nitrogen_div_shan_null, lmer_nitrogen_div_shan)
+
+# Simpson's Index
+lmer_nitrogen_div_simp_null <- lmer(div_simp ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_div_simp <- lmer(div_simp ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_yield)
+anova(lmer_nitrogen_div_simp_null, lmer_nitrogen_div_simp)
+
+# pH
+lmer_nitrogen_ph_null <- lmer(ph ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_ph <- lmer(ph ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_ph)
+anova(lmer_nitrogen_ph_null, lmer_nitrogen_ph)
+
+# Soil Percent C
+lmer_nitrogen_per_C_null <- lmer(per_C ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_per_C <- lmer(per_C ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_per_C)
+anova(lmer_nitrogen_per_C_null, lmer_nitrogen_per_C) # there is a significant effect of nitrogen on percent carbon
+
+# Soil Percent N
+lmer_nitrogen_per_N_null <- lmer(per_N ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_per_N <- lmer(per_N ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_per_N)
+anova(lmer_nitrogen_per_N_null, lmer_nitrogen_per_N)
+
+# Soil Carbon:Nitrogen Ratio
+lmer_nitrogen_cn_ratio_null <- lmer(cn_ratio ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_cn_ratio <- lmer(cn_ratio ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_cn_ratio)
+anova(lmer_nitrogen_cn_ratio_null, lmer_nitrogen_cn_ratio) # there is a marginally significant effect of nitrogen on carbon:nitrogen ratio
+
+# Soil Phosphorus
+lmer_nitrogen_p_ppm_null <- lmer(p_ppm ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_p_ppm <- lmer(p_ppm ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_p_ppm)
+anova(lmer_nitrogen_p_ppm_null, lmer_nitrogen_p_ppm)
+
+# Cation Exchange Capacity
+lmer_nitrogen_est_cec_null <- lmer(est_cec ~ 1 + (1|block), data = master, REML = FALSE)
+lmer_nitrogen_est_cec <- lmer(est_cec ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_nitrogen_est_cec)
+anova(lmer_nitrogen_est_cec_null, lmer_nitrogen_est_cec)
+
+# Coefficient of Determination
+model_list <- list(lmer_nitrogen_yield, lmer_nitrogen_div_rich, lmer_nitrogen_div_shan, lmer_nitrogen_div_simp, lmer_nitrogen_ph, lmer_nitrogen_per_C, lmer_nitrogen_per_N, lmer_nitrogen_cn_ratio, lmer_nitrogen_p_ppm, lmer_nitrogen_est_cec)
+rsquared(model_list)
+```
+
+#### Relationship between Yield and AMF Diveristy and Soil Parameters
+
+```{r rhinelander_lmer_yield_div_soil}
+lmer_yield_null <- lmer(yield ~ nitrogen + (1|block), data = master, REML = FALSE)
+
+# Richness
+lmer_yield_rich <- lmer(yield ~ nitrogen + div_rich + (1|block), data = master, REML = FALSE); summary(lmer_yield_rich)
+anova(lmer_yield_null, lmer_yield_rich) # there is a significant effect of richness on yield
+
+# Shannon Index
+lmer_yield_shan <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master, REML = FALSE); summary(lmer_yield_shan)
+anova(lmer_yield_null, lmer_yield_shan) # there is a significant effect of Shannon index on yield
+
+# Simpson's Index
+lmer_yield_simp <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master, REML = FALSE); summary(lmer_yield_simp)
+anova(lmer_yield_null, lmer_yield_simp) # there is a marginally significant effect of Simpson's index on yield
+
+# pH
+lmer_yield_ph <- lmer(yield ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_yield_ph)
+anova(lmer_yield_null, lmer_yield_ph) # there is a significant relationship between yield and pH
+
+# Soil Percent C
+lmer_yield_C <- lmer(yield ~ nitrogen + per_C + (1|block), data = master, REML = FALSE); summary(lmer_yield_C)
+anova(lmer_yield_null, lmer_yield_C)
+
+# Soil Percent N
+lmer_yield_N <- lmer(yield ~ nitrogen + per_N + (1|block), data = master, REML = FALSE); summary(lmer_yield_N)
+anova(lmer_yield_null, lmer_yield_N) # there is a significant relationship between yield and percent N
+
+# Soil Carbon:Nitrogen Ratio
+lmer_yield_CN <- lmer(yield ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE); summary(lmer_yield_CN)
+anova(lmer_yield_null, lmer_yield_CN) # there is a significant relationship between yield and C:N ratio
+
+# Phosphorous
+lmer_yield_P <- lmer(yield ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE); summary(lmer_yield_P)
+anova(lmer_yield_null, lmer_yield_P)
+
+# Cation Exchange Capacity
+lmer_yield_CEC <- lmer(yield ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE); summary(lmer_yield_CEC)
+anova(lmer_yield_null, lmer_yield_CEC) # there is a significant relationship between yield and cation exchnage capacity
+
+# Coefficient of Determination
+model_list <- list(lmer_yield_rich, lmer_yield_shan, lmer_yield_simp, lmer_yield_ph, lmer_yield_C, lmer_yield_N, lmer_yield_CN, lmer_yield_P, lmer_yield_CEC)
+rsquared(model_list)
+```
+
+#### Relationship between AMF Diversity and Soil Parameters
+
+```{r rhinelander_lmer_div_soil}
+## Richness
+
+# Null model
+lmer_div_rich_null <- lmer(div_rich ~ nitrogen + (1|block), data = master, REML = FALSE)
+
+# pH
+lmer_div_rich_ph <- lmer(div_rich ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_ph)
+anova(lmer_div_rich_null, lmer_div_rich_ph) # there is a significant relationship between div_rich and pH
+
+# Soil Percent C
+lmer_div_rich_C <- lmer(div_rich ~ nitrogen + per_C + (1|block), data = master, REML = FALSE)
+anova(lmer_div_rich_null, lmer_div_rich_C)
+
+# Soil Percent N
+lmer_div_rich_N <- lmer(div_rich ~ nitrogen + per_N + (1|block), data = master, REML = FALSE)
+anova(lmer_div_rich_null, lmer_div_rich_N)
+
+# Soil Carbon:Nitrogen Ratio
+lmer_div_rich_CN <- lmer(div_rich ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE)
+anova(lmer_div_rich_null, lmer_div_rich_CN)
+
+# Phosphorous
+lmer_div_rich_P <- lmer(div_rich ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE)
+anova(lmer_div_rich_null, lmer_div_rich_P)
+
+# Cation Exchange Capacity
+lmer_div_rich_CEC <- lmer(div_rich ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE)
+anova(lmer_div_rich_null, lmer_div_rich_CEC)
+
+
+## Shannon Index
+
+# Null model
+lmer_div_shan_null <- lmer(div_shan ~ nitrogen + (1|block), data = master, REML = FALSE)
+
+# pH
+lmer_div_shan_ph <- lmer(div_shan ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_div_shan_ph)
+anova(lmer_div_shan_null, lmer_div_shan_ph) # there is a significant relationship between div_shan and pH
+
+# Soil Percent C
+lmer_div_shan_C <- lmer(div_shan ~ nitrogen + per_C + (1|block), data = master, REML = FALSE)
+anova(lmer_div_shan_null, lmer_div_shan_C)
+
+# Soil Percent N
+lmer_div_shan_N <- lmer(div_shan ~ nitrogen + per_N + (1|block), data = master, REML = FALSE)
+anova(lmer_div_shan_null, lmer_div_shan_N) # there is a significant relationship between div_shan and soil percent N
+
+# Soil Carbon:Nitrogen Ratio
+lmer_div_shan_CN <- lmer(div_shan ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE)
+anova(lmer_div_shan_null, lmer_div_shan_CN)
+
+# Phosphorous
+lmer_div_shan_P <- lmer(div_shan ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE)
+anova(lmer_div_shan_null, lmer_div_shan_P)
+
+# Cation Exchange Capacity
+lmer_div_shan_CEC <- lmer(div_shan ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE)
+anova(lmer_div_shan_null, lmer_div_shan_CEC)
+
+
+## Simpson's Index
+
+# Null model
+lmer_div_simp_null <- lmer(div_simp ~ nitrogen + (1|block), data = master, REML = FALSE)
+
+# pH
+lmer_div_simp_ph <- lmer(div_simp ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_div_simp_ph)
+anova(lmer_div_simp_null, lmer_div_simp_ph) # there is a significant relationship between div_simp and pH
+
+# Soil Percent C
+lmer_div_simp_C <- lmer(div_simp ~ nitrogen + per_C + (1|block), data = master, REML = FALSE)
+anova(lmer_div_simp_null, lmer_div_simp_C) # there is a significant relationship between div_simp and soil percent C
+
+# Soil Percent N
+lmer_div_simp_N <- lmer(div_simp ~ nitrogen + per_N + (1|block), data = master, REML = FALSE)
+anova(lmer_div_simp_null, lmer_div_simp_N) # there is a significant relationship between div_simp and soil percent N
+
+# Soil Carbon:Nitrogen Ratio
+lmer_div_simp_CN <- lmer(div_simp ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE)
+anova(lmer_div_simp_null, lmer_div_simp_CN)
+
+# Phosphorous
+lmer_div_simp_P <- lmer(div_simp ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE)
+anova(lmer_div_simp_null, lmer_div_simp_P)
+
+# Cation Exchange Capacity
+lmer_div_simp_CEC <- lmer(div_simp ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE)
+anova(lmer_div_simp_null, lmer_div_simp_CEC)
+```
+
+
+
+
+
+
+
+
+
+
+
+## Scatterplots
+
+```{r all_sites_scatterplot, include = FALSE}
+# biomass
+ggplot(master, aes(x = div_rich, y = biomass, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_rar, y = biomass, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_shan, y = biomass, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_simp, y = biomass, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+
+# yield
+ggplot(master, aes(x = div_rich, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_rar, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_shan, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+ggplot(master, aes(x = div_simp, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm")
+```
+
+## Linear Mixed Effects Regression Analysis
+
+#### Biomass
+
+All LMER models (except rarefied richness) had a random effect standard deviation of 0 and hence the random effect (block) was removed according to [David Bates]("http://webcom.upmf-grenoble.fr/LIP/Perso/DMuller/M2R/R_et_Mixed/documents/Bates-book.pdf") (pg. 11). 
+
+Multiple linear regression models indicated that nitrogen did not affect biomass at Oregon ($T_6 = -1.526$, $p = 0.178$, adjusted $R^2 = 0.1596$). ASV richness ($T_6 = 2.862$, $p = 0.0353$, adjusted $R^2 = 0.6178$) and rarefied richness ($T_6 = 3.137$, $p = 0.0258$, adjusted $R^2 = 0.6602$) were significantly associated with biomass. Shannon index and Simpson's index were not ($p > 0.2$).
+
+```{r predict_biomass}
+# LMER
+lmer_biomass_null <- lmer(biomass ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_biomass_null)
+lmer_biomass_rich <- lmer(biomass ~ nitrogen + div_rich + (1|block), data = master, REML = FALSE); summary(lmer_biomass_rich); anova(lmer_biomass_null, lmer_biomass_rich)
+lmer_biomass_rar <- lmer(biomass ~ nitrogen + div_rar + (1|block), data = master, REML = FALSE); summary(lmer_biomass_rar); anova(lmer_biomass_null, lmer_biomass_rar)
+lmer_biomass_shan <- lmer(biomass ~ nitrogen + div_shan + (1|block), data = master, REML = FALSE); summary(lmer_biomass_shan); anova(lmer_biomass_null, lmer_biomass_shan)
+lmer_biomass_simp <- lmer(biomass ~ nitrogen + div_simp + (1|block), data = master, REML = FALSE); summary(lmer_biomass_simp); anova(lmer_biomass_null, lmer_biomass_simp)
+
+# LM
+lm_biomass_null <- lm(biomass ~ nitrogen, data = master); summary(lm_biomass_null)
+lm_biomass_rich <- lm(biomass ~ nitrogen + div_rich, data = master); summary(lm_biomass_rich)
+lm_biomass_rar <- lm(biomass ~ nitrogen + div_rar, data = master); summary(lm_biomass_rar)
+lm_biomass_shan <- lm(biomass ~ nitrogen + div_shan, data = master); summary(lm_biomass_shan)
+lm_biomass_simp <- lm(biomass ~ nitrogen + div_simp, data = master); summary(lm_biomass_simp)
+```
+
+#### Yield
+
+In terms of yield, the block random effect did explain variation and thus the data were analyzed with linear mixed effects models. Nitrogen amendment did not significantly affect yield ($T_{4.0564} = 1.639$, $p = 0.176$). ASV richness ($\chi^2_1 = 4.9155$, $p = 0.02662$) and rarefied richness ($\chi^2_1 = 4.2241$, $p = 0.03985$) significantly improved the linear mixed effects model, but Shannon index and Simpson's index do not ($p > 0.13$).
+
+```{r predict_yield, eval = FALSE}
+# LMER
+lmer_yield_null <- lmer(yield ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_yield_null)
+plot(lmer_yield_null)
+lmer_yield_rich <- lmer(yield ~ nitrogen + div_rich + (1|block), data = master, REML = FALSE); summary(lmer_yield_rich); anova(lmer_yield_null, lmer_yield_rich)
+plot(lmer_yield_rich)
+lmer_yield_rar <- lmer(yield ~ nitrogen + div_rar + (1|block), data = master, REML = FALSE); summary(lmer_yield_rar); anova(lmer_yield_null, lmer_yield_rar)
+plot(lmer_yield_rar)
+lmer_yield_shan <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master, REML = FALSE); summary(lmer_yield_shan); anova(lmer_yield_null, lmer_yield_shan)
+plot(lmer_yield_shan)
+lmer_yield_simp <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master, REML = FALSE); summary(lmer_yield_simp); anova(lmer_yield_null, lmer_yield_simp)
+plot(lmer_yield_simp)
+```
+
+```{r oregon_scatter}
+ggplot(master, aes(x = div_rich, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm") + labs(x = "ASV Richness", y = "Yield (Mg/ha)")
+```
+
+LMER indicated that multiple soil percent N and C:N ratio were correlated with switchgrass yield.
+
+```{r predict_yield_soil, eval = FALSE}
+# LMER
+lmer_yield_null <- lmer(yield ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_yield_null)
+lmer_yield_ph <- lmer(yield ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_yield_ph); anova(lmer_yield_null, lmer_yield_ph)
+lmer_yield_C <- lmer(yield ~ nitrogen + per_C + (1|block), data = master, REML = FALSE); summary(lmer_yield_C); anova(lmer_yield_null, lmer_yield_C)
+lmer_yield_N <- lmer(yield ~ nitrogen + per_N + (1|block), data = master, REML = FALSE); summary(lmer_yield_N); anova(lmer_yield_null, lmer_yield_N)
+plot(lmer_yield_N)
+lmer_yield_CN <- lmer(yield ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE); summary(lmer_yield_CN); anova(lmer_yield_null, lmer_yield_CN)
+plot(lmer_yield_CN)
+lmer_yield_P <- lmer(yield ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE); summary(lmer_yield_P); anova(lmer_yield_null, lmer_yield_P)
+lmer_yield_cec <- lmer(yield ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE); summary(lmer_yield_cec); anova(lmer_yield_null, lmer_yield_cec)
+```
+
+```{r rhinelander_scatter_yield_soil}
+ggplot(master, aes(x = per_N, y = yield, color = nitrogen)) + geom_point() + stat_smooth(method = "lm") + labs(x = "Soil Percent N", y = "Yield (Mg/ha)")
+```
+
+#### Diversity
+
+LMER indicated that multiple soil parameters were correlated with ASV richness, namely pH and cation exchange capacity. 
+
+```{r predict_rich_soil, eval = FALSE}
+# LMER
+lmer_div_rich_null <- lmer(div_rich ~ nitrogen + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_null)
+lmer_div_rich_ph <- lmer(div_rich ~ nitrogen + ph + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_ph); anova(lmer_div_rich_null, lmer_div_rich_ph)
+lmer_div_rich_C <- lmer(div_rich ~ nitrogen + per_C + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_C); anova(lmer_div_rich_null, lmer_div_rich_C)
+lmer_div_rich_N <- lmer(div_rich ~ nitrogen + per_N + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_N); anova(lmer_div_rich_null, lmer_div_rich_N)
+lmer_div_rich_CN <- lmer(div_rich ~ nitrogen + cn_ratio + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_CN); anova(lmer_div_rich_null, lmer_div_rich_CN)
+lmer_div_rich_P <- lmer(div_rich ~ nitrogen + p_ppm + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_P); anova(lmer_div_rich_null, lmer_div_rich_P)
+lmer_div_rich_cec <- lmer(div_rich ~ nitrogen + est_cec + (1|block), data = master, REML = FALSE); summary(lmer_div_rich_cec); anova(lmer_div_rich_null, lmer_div_rich_cec)
+
+# LM
+lm_div_rich_ph <- lm(div_rich ~ nitrogen + ph, data = master); summary(lm_div_rich_ph)
+lm_div_rich_C <- lm(div_rich ~ nitrogen + per_C, data = master); summary(lm_div_rich_C)
+lm_div_rich_N <- lm(div_rich ~ nitrogen + per_N, data = master); summary(lm_div_rich_N)
+lm_div_rich_CN <- lm(div_rich ~ nitrogen + cn_ratio, data = master); summary(lm_div_rich_CN)
+lm_div_rich_P <- lm(div_rich ~ nitrogen + p_ppm, data = master); summary(lm_div_rich_P)
+lm_div_rich_cec <- lm(div_rich ~ nitrogen + est_cec, data = master); summary(lm_div_rich_cec)
+```
+
+## Results
+
+Nitrogen did not affect biomass or yield. Richness was significantly correlated with both parameters of plant performance and resulted in models with high adjusted $R^2$ values (greater than $0.60$ for biomass).
+
