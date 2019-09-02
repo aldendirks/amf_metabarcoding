@@ -1,3 +1,12 @@
-bin/bbmap/
 .Rhistory
 .Rproj.user
+bin/bbmap/
+data/lipids/
+data/seqs/bioinfo
+data/seqs/01_raw
+data/seqs/02_demultiplexed
+data/seqs/03_ccs
+data/seqs/04_fastq
+figures/
+manuscript/
+misc/
