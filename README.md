@@ -5,19 +5,25 @@ Detailed below is the reproducible workflow for the data analysis performed in D
 
 ## 1: Import GitHub Project
 
-Open Terminal and change the current working directory to the location where you want this project to be cloned. Clone the repository with `git clone`.  
+Open Terminal and change the current working directory to the location where you want this project to be cloned. Clone the repository with `git clone` and enter the new directory.  
 
 ```
 git clone https://github.com/aldendirks/amf_metabarcoding.git
+cd ./amf_metabarcoding
 ```
 
-## 2: Acquire Data
+## 2: Acquire Raw Sequence Data
 
-From the project root directory, run the `x` script to download all data (raw and processed) totalling x Gb.
+From the project root directory, run the `get_sra.sh` script to install `SRA Toolkit` and download the raw sequence data from NCBI SRA BioProject accession PRJNA590305. After downloading SRA Toolkit, you will be prompted to manually designate a directory to store the sequence files. Use `tab` to navigate to `Cache`, press `o` on the keyboard to select a directory, and use the arrow keys and `enter` to navigate to the `data/seqs/bioinfo/03_css/` directory in the project directory. Make this the SRA download directory.
 
 ```
-bash scripts/x
+bash scripts/get_sra.sh
 ```
+
+
+
+
+
 
 Alternatively, skip the raw sequence data and just download the processed data files, which total x Mb. 
 
