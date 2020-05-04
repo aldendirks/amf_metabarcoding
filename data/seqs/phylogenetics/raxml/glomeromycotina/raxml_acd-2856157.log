@@ -1,0 +1,659 @@
+
+    Provides Bioinformatics software.
+    For more information please use:
+
+        $ module help Bioinformatics
+
+
+
+RAxML can't, parse the alignment file as phylip file 
+it will now try to parse it as FASTA file
+
+IMPORTANT WARNING: Alignment column 106 contains only undetermined values which will be treated as missing data
+IMPORTANT WARNING: Alignment column 474 contains only undetermined values which will be treated as missing data
+
+
+IMPORTANT WARNING: Sequences ASV_4 and ASV_11 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_157 and ASV_254 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_16 and ASV_25 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_16 and ASV_35 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_36 and ASV_77 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_36 and ASV_232 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_220 and ASV_248 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_220 and ASV_279 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_78 and ASV_203 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_126 and ASV_179 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_126 and ASV_422 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_141 and ASV_345 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_326 and ASV_358 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_390 and ASV_425 are exactly identical
+
+
+IMPORTANT WARNING: Sequences MG710519.1_Dominikia_litorea_isolate_Dl-8_small_su and MG710517.1_Dominikia_litorea_isolate_Dl-10_small_s are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_71 and ASV_197 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_247 and ASV_314 are exactly identical
+
+
+IMPORTANT WARNING: Sequences KJ564164.2_Dominikia_minuta_strain_137-2_clone_31_ and KJ564163.2_Dominikia_minuta_strain_137-2_clone_15_ are exactly identical
+
+
+IMPORTANT WARNING: Sequences KY555053.1_Dominikia_sp._JB-2017_isolate_344-5_sma and KY555052.1_Dominikia_sp._JB-2017_isolate_344-4_sma are exactly identical
+
+
+IMPORTANT WARNING: Sequences FR750370.1_Glomus_macrocarpum_18S_rRNA_gene_partia and FR750369.1_Glomus_macrocarpum_18S_rRNA_gene_partia are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_167 and ASV_433 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_306 and ASV_372 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_312 and ASV_426 are exactly identical
+
+
+IMPORTANT WARNING: Sequences FR750189.1_Rhizophagus_irregularis_18S_rRNA_gene_p and FR750186.1_Rhizophagus_irregularis_18S_rRNA_gene_p are exactly identical
+
+
+IMPORTANT WARNING: Sequences MG836660.1_Rhizoglomus_vesiculiferum_isolate_Rv_16 and MG836659.1_Rhizoglomus_vesiculiferum_isolate_Rv_10 are exactly identical
+
+
+IMPORTANT WARNING: Sequences MN130957.1_Rhizoglomus_sp._JB-2019b_clone_rm6_smal and MN130955.1_Rhizoglomus_sp._JB-2019b_clone_rm1_smal are exactly identical
+
+
+IMPORTANT WARNING: Sequences FR750073.1_Rhizophagus_sp._MUCL_46100_18S_rRNA_gen and FR750071.1_Rhizophagus_sp._MUCL_46100_18S_rRNA_gen are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_370 and ASV_435 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_175 and ASV_261 are exactly identical
+
+
+IMPORTANT WARNING: Sequences KJ850196.1_Diversispora_insculpta_isolate_142-2-82 and KJ850195.1_Diversispora_insculpta_isolate_142-1-71 are exactly identical
+
+
+IMPORTANT WARNING: Sequences KJ850203.1_Diversispora_gibbosa_isolate_109-2-5_18 and KJ850202.1_Diversispora_gibbosa_isolate_109-1-4_18 are exactly identical
+
+
+IMPORTANT WARNING: Sequences KJ850200.1_Diversispora_trimurales_isolate_131-2-5 and KJ850199.1_Diversispora_trimurales_isolate_131-1-4 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_173 and ASV_235 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_347 and ASV_377 are exactly identical
+
+
+IMPORTANT WARNING: Sequences HE962446.1_Scutellospora_savannicola_18S_rRNA_gene and HE962436.1_Scutellospora_savannicola_18S_rRNA_gene are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_21 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_48 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_182 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_263 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_298 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_3 and ASV_334 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_169 and ASV_184 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_5 and ASV_124 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_7 and ASV_26 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_7 and ASV_88 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_7 and ASV_90 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_97 and ASV_320 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_18 and ASV_116 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_18 and ASV_121 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_18 and ASV_208 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_6 and ASV_12 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_6 and ASV_276 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_19 and ASV_38 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_19 and ASV_49 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_19 and ASV_99 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_27 and ASV_143 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_37 and ASV_53 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_37 and ASV_138 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_37 and ASV_200 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_37 and ASV_237 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_37 and ASV_303 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_72 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_108 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_113 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_130 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_178 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_23 and ASV_196 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_45 and ASV_73 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_117 and ASV_132 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_117 and ASV_140 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_57 and ASV_59 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_57 and ASV_101 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_55 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_65 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_107 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_111 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_161 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_238 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_265 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_33 and ASV_287 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_250 and ASV_323 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_114 and ASV_155 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_28 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_47 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_70 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_109 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_112 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_134 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_217 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_10 and ASV_277 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_20 and ASV_242 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_20 and ASV_288 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_283 and ASV_304 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_40 and ASV_125 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_91 and ASV_102 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_91 and ASV_144 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_22 and ASV_29 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_22 and ASV_41 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_22 and ASV_229 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_22 and ASV_399 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_131 and ASV_375 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_153 and ASV_204 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_153 and ASV_234 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_153 and ASV_327 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_153 and ASV_386 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_93 and ASV_127 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_93 and ASV_150 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_93 and ASV_190 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_195 and ASV_205 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_39 and ASV_63 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_52 and ASV_64 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_52 and ASV_146 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_52 and ASV_355 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_85 and ASV_158 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_85 and ASV_172 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_46 and ASV_56 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_46 and ASV_82 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_44 and ASV_262 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_233 and ASV_256 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_397 and ASV_408 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_187 and ASV_427 are exactly identical
+
+
+IMPORTANT WARNING: Sequences KY630231.1_Paraglomeraceae_sp._JB-2017a_isolate_6_ and KY630230.1_Paraglomeraceae_sp._JB-2017a_isolate_10 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_2 and ASV_120 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_2 and ASV_171 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_79 and ASV_89 are exactly identical
+
+
+IMPORTANT WARNING: Sequences ASV_79 and ASV_330 are exactly identical
+
+
+IMPORTANT WARNING: Sequences FR692348.1_Acaulospora_cavernata_genomic_DNA_conta and FR692347.1_Acaulospora_cavernata_genomic_DNA_conta are exactly identical
+
+
+IMPORTANT WARNING: Sequences FN547511.1_Acaulospora_laevis_18S_rRNA_gene_partia and FN547510.1_Acaulospora_laevis_18S_rRNA_gene_partia are exactly identical
+
+
+IMPORTANT WARNING: Sequences LR596346.1_Archaeospora_sp._AS-2019a_genomic_DNA_s and LR596344.1_Archaeospora_sp._AS-2019a_genomic_DNA_s are exactly identical
+
+
+IMPORTANT WARNING: Sequences FR750022.1_Archaeospora_schenckii_18S_rRNA_gene_pa and FR750021.1_Archaeospora_schenckii_18S_rRNA_gene_pa are exactly identical
+
+IMPORTANT WARNING
+Found 130 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+
+IMPORTANT WARNING
+Found 2 columns that contain only undetermined values which will be treated as missing data.
+Normally these columns should be excluded from the analysis.
+
+Just in case you might need it, an alignment file with 
+sequence duplicates and undetermined columns removed is printed to file /home/adirks/projects/amf_metabarcoding/data/seqs/phylogenetics/mafft/amf_phylogeny_glomeromycotina_mafft.fasta.reduced
+
+
+Using BFGS method to optimize GTR rate parameters, to disable this specify "--no-bfgs" 
+
+
+Alignment has 2 completely undetermined sites that will be automatically removed from the input data
+
+
+This is the RAxML Master Pthread
+
+This is RAxML Worker Pthread Number: 1
+
+This is RAxML Worker Pthread Number: 3
+
+This is RAxML Worker Pthread Number: 2
+
+This is RAxML Worker Pthread Number: 4
+
+This is RAxML Worker Pthread Number: 5
+
+This is RAxML Worker Pthread Number: 6
+
+This is RAxML Worker Pthread Number: 7
+
+
+This is RAxML version 8.2.11 released by Alexandros Stamatakis on June 2017.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Sarah Lutteropp   (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+Charlie Taylor    (UF)
+
+
+Alignment has 1033 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 78.06%
+
+RAxML rapid bootstrapping and subsequent ML search
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+
+Executing 100 rapid bootstrap inferences and thereafter a thorough ML search 
+
+All free model parameters will be estimated by RAxML
+GAMMA model of rate heterogeneity, ML estimate of alpha-parameter
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 1033
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+raxmlHPC-PTHREADS -s /home/adirks/projects/amf_metabarcoding/data/seqs/phylogenetics/mafft/amf_phylogeny_glomeromycotina_mafft.fasta -n amf_phylogeny_glomeromycotina -m GTRGAMMA -p 19930327 -f a -# 100 -T 8 -x 19930327 
+
+
+
+Time for BS model parameter optimization 3.295963
+Bootstrap[0]: Time 18.350771 seconds, bootstrap likelihood -46075.547975, best rearrangement setting 5
+Bootstrap[1]: Time 13.949178 seconds, bootstrap likelihood -46166.636243, best rearrangement setting 12
+Bootstrap[2]: Time 13.663083 seconds, bootstrap likelihood -46017.182056, best rearrangement setting 13
+Bootstrap[3]: Time 11.874890 seconds, bootstrap likelihood -46549.427235, best rearrangement setting 8
+Bootstrap[4]: Time 11.187096 seconds, bootstrap likelihood -44914.634594, best rearrangement setting 9
+Bootstrap[5]: Time 9.937895 seconds, bootstrap likelihood -43599.078673, best rearrangement setting 5
+Bootstrap[6]: Time 9.643624 seconds, bootstrap likelihood -42451.161091, best rearrangement setting 5
+Bootstrap[7]: Time 9.629674 seconds, bootstrap likelihood -42973.683183, best rearrangement setting 6
+Bootstrap[8]: Time 14.091918 seconds, bootstrap likelihood -45708.322235, best rearrangement setting 15
+Bootstrap[9]: Time 10.068448 seconds, bootstrap likelihood -42839.004192, best rearrangement setting 7
+Bootstrap[10]: Time 13.882730 seconds, bootstrap likelihood -42849.176747, best rearrangement setting 10
+Bootstrap[11]: Time 12.950536 seconds, bootstrap likelihood -45680.679238, best rearrangement setting 10
+Bootstrap[12]: Time 12.931000 seconds, bootstrap likelihood -42172.067720, best rearrangement setting 14
+Bootstrap[13]: Time 11.508964 seconds, bootstrap likelihood -44244.505628, best rearrangement setting 10
+Bootstrap[14]: Time 11.790615 seconds, bootstrap likelihood -44691.016781, best rearrangement setting 9
+Bootstrap[15]: Time 10.160712 seconds, bootstrap likelihood -40210.847302, best rearrangement setting 7
+Bootstrap[16]: Time 11.699034 seconds, bootstrap likelihood -44095.213119, best rearrangement setting 10
+Bootstrap[17]: Time 11.977919 seconds, bootstrap likelihood -44968.258389, best rearrangement setting 6
+Bootstrap[18]: Time 13.486608 seconds, bootstrap likelihood -45512.742783, best rearrangement setting 15
+Bootstrap[19]: Time 13.033104 seconds, bootstrap likelihood -42980.376909, best rearrangement setting 14
+Bootstrap[20]: Time 14.362322 seconds, bootstrap likelihood -44820.682009, best rearrangement setting 11
+Bootstrap[21]: Time 12.215246 seconds, bootstrap likelihood -43973.236527, best rearrangement setting 13
+Bootstrap[22]: Time 11.875555 seconds, bootstrap likelihood -46284.517582, best rearrangement setting 12
+Bootstrap[23]: Time 10.316981 seconds, bootstrap likelihood -43799.899481, best rearrangement setting 6
+Bootstrap[24]: Time 12.425468 seconds, bootstrap likelihood -43199.879852, best rearrangement setting 15
+Bootstrap[25]: Time 11.439796 seconds, bootstrap likelihood -46272.626436, best rearrangement setting 9
+Bootstrap[26]: Time 12.949141 seconds, bootstrap likelihood -43608.933511, best rearrangement setting 15
+Bootstrap[27]: Time 10.233095 seconds, bootstrap likelihood -45143.075780, best rearrangement setting 6
+Bootstrap[28]: Time 13.931517 seconds, bootstrap likelihood -43971.536502, best rearrangement setting 13
+Bootstrap[29]: Time 13.356378 seconds, bootstrap likelihood -44722.814873, best rearrangement setting 15
+Bootstrap[30]: Time 11.544509 seconds, bootstrap likelihood -44211.360149, best rearrangement setting 6
+Bootstrap[31]: Time 11.879622 seconds, bootstrap likelihood -44015.214904, best rearrangement setting 9
+Bootstrap[32]: Time 11.582983 seconds, bootstrap likelihood -45177.113367, best rearrangement setting 10
+Bootstrap[33]: Time 11.930255 seconds, bootstrap likelihood -46099.195023, best rearrangement setting 14
+Bootstrap[34]: Time 11.274636 seconds, bootstrap likelihood -43365.813203, best rearrangement setting 8
+Bootstrap[35]: Time 10.788835 seconds, bootstrap likelihood -46164.320504, best rearrangement setting 7
+Bootstrap[36]: Time 12.015329 seconds, bootstrap likelihood -42496.517613, best rearrangement setting 13
+Bootstrap[37]: Time 12.031262 seconds, bootstrap likelihood -41730.823614, best rearrangement setting 15
+Bootstrap[38]: Time 11.600361 seconds, bootstrap likelihood -41814.866316, best rearrangement setting 8
+Bootstrap[39]: Time 12.772435 seconds, bootstrap likelihood -46287.194855, best rearrangement setting 15
+Bootstrap[40]: Time 13.942231 seconds, bootstrap likelihood -47288.027788, best rearrangement setting 9
+Bootstrap[41]: Time 10.657395 seconds, bootstrap likelihood -46008.323494, best rearrangement setting 5
+Bootstrap[42]: Time 9.614507 seconds, bootstrap likelihood -42542.009573, best rearrangement setting 5
+Bootstrap[43]: Time 11.184410 seconds, bootstrap likelihood -45411.551953, best rearrangement setting 7
+Bootstrap[44]: Time 13.513250 seconds, bootstrap likelihood -45895.182268, best rearrangement setting 8
+Bootstrap[45]: Time 11.064223 seconds, bootstrap likelihood -42926.473344, best rearrangement setting 15
+Bootstrap[46]: Time 10.326023 seconds, bootstrap likelihood -45923.015199, best rearrangement setting 5
+Bootstrap[47]: Time 12.581598 seconds, bootstrap likelihood -46377.920225, best rearrangement setting 15
+Bootstrap[48]: Time 10.727955 seconds, bootstrap likelihood -46248.236365, best rearrangement setting 6
+Bootstrap[49]: Time 10.309114 seconds, bootstrap likelihood -44690.253859, best rearrangement setting 5
+Bootstrap[50]: Time 12.963798 seconds, bootstrap likelihood -44978.024977, best rearrangement setting 9
+Bootstrap[51]: Time 12.213173 seconds, bootstrap likelihood -44041.002765, best rearrangement setting 10
+Bootstrap[52]: Time 10.711062 seconds, bootstrap likelihood -45260.465950, best rearrangement setting 9
+Bootstrap[53]: Time 11.387451 seconds, bootstrap likelihood -41324.336164, best rearrangement setting 11
+Bootstrap[54]: Time 11.162004 seconds, bootstrap likelihood -42574.672200, best rearrangement setting 12
+Bootstrap[55]: Time 10.094059 seconds, bootstrap likelihood -45521.995225, best rearrangement setting 8
+Bootstrap[56]: Time 10.359429 seconds, bootstrap likelihood -41905.466170, best rearrangement setting 8
+Bootstrap[57]: Time 11.453927 seconds, bootstrap likelihood -43651.492877, best rearrangement setting 8
+Bootstrap[58]: Time 10.947804 seconds, bootstrap likelihood -44438.405713, best rearrangement setting 12
+Bootstrap[59]: Time 11.635560 seconds, bootstrap likelihood -43591.240476, best rearrangement setting 11
+Bootstrap[60]: Time 12.859790 seconds, bootstrap likelihood -44892.445625, best rearrangement setting 6
+Bootstrap[61]: Time 14.221743 seconds, bootstrap likelihood -48340.662541, best rearrangement setting 11
+Bootstrap[62]: Time 11.379376 seconds, bootstrap likelihood -45709.522849, best rearrangement setting 6
+Bootstrap[63]: Time 9.253263 seconds, bootstrap likelihood -41926.133219, best rearrangement setting 5
+Bootstrap[64]: Time 9.945107 seconds, bootstrap likelihood -42255.121276, best rearrangement setting 6
+Bootstrap[65]: Time 13.809390 seconds, bootstrap likelihood -46159.658236, best rearrangement setting 11
+Bootstrap[66]: Time 13.554395 seconds, bootstrap likelihood -42938.351098, best rearrangement setting 12
+Bootstrap[67]: Time 10.698014 seconds, bootstrap likelihood -43994.958066, best rearrangement setting 7
+Bootstrap[68]: Time 11.666595 seconds, bootstrap likelihood -45633.958004, best rearrangement setting 15
+Bootstrap[69]: Time 13.515270 seconds, bootstrap likelihood -48194.449928, best rearrangement setting 15
+Bootstrap[70]: Time 11.541822 seconds, bootstrap likelihood -45923.910764, best rearrangement setting 5
+Bootstrap[71]: Time 10.501075 seconds, bootstrap likelihood -44995.073151, best rearrangement setting 6
+Bootstrap[72]: Time 13.326630 seconds, bootstrap likelihood -43013.777842, best rearrangement setting 14
+Bootstrap[73]: Time 11.660867 seconds, bootstrap likelihood -44853.951054, best rearrangement setting 14
+Bootstrap[74]: Time 10.556811 seconds, bootstrap likelihood -46105.267712, best rearrangement setting 6
+Bootstrap[75]: Time 11.242450 seconds, bootstrap likelihood -45618.189770, best rearrangement setting 6
+Bootstrap[76]: Time 9.241754 seconds, bootstrap likelihood -45772.912844, best rearrangement setting 5
+Bootstrap[77]: Time 11.439890 seconds, bootstrap likelihood -40906.532799, best rearrangement setting 14
+Bootstrap[78]: Time 10.693035 seconds, bootstrap likelihood -43720.246061, best rearrangement setting 6
+Bootstrap[79]: Time 9.977953 seconds, bootstrap likelihood -44652.172978, best rearrangement setting 7
+Bootstrap[80]: Time 14.874759 seconds, bootstrap likelihood -41746.249808, best rearrangement setting 12
+Bootstrap[81]: Time 13.298289 seconds, bootstrap likelihood -41021.527386, best rearrangement setting 14
+Bootstrap[82]: Time 11.656870 seconds, bootstrap likelihood -43358.648881, best rearrangement setting 8
+Bootstrap[83]: Time 13.300930 seconds, bootstrap likelihood -45165.155273, best rearrangement setting 11
+Bootstrap[84]: Time 11.213173 seconds, bootstrap likelihood -45355.246170, best rearrangement setting 8
+Bootstrap[85]: Time 11.026233 seconds, bootstrap likelihood -48424.074109, best rearrangement setting 5
+Bootstrap[86]: Time 11.522909 seconds, bootstrap likelihood -45507.476936, best rearrangement setting 15
+Bootstrap[87]: Time 14.243736 seconds, bootstrap likelihood -45698.967171, best rearrangement setting 12
+Bootstrap[88]: Time 12.724828 seconds, bootstrap likelihood -46269.834608, best rearrangement setting 14
+Bootstrap[89]: Time 12.137667 seconds, bootstrap likelihood -45670.576633, best rearrangement setting 12
+Bootstrap[90]: Time 13.892693 seconds, bootstrap likelihood -43356.314903, best rearrangement setting 10
+Bootstrap[91]: Time 11.095405 seconds, bootstrap likelihood -44864.431889, best rearrangement setting 6
+Bootstrap[92]: Time 11.964599 seconds, bootstrap likelihood -44983.798925, best rearrangement setting 15
+Bootstrap[93]: Time 13.461543 seconds, bootstrap likelihood -45404.945575, best rearrangement setting 15
+Bootstrap[94]: Time 11.251791 seconds, bootstrap likelihood -43895.470405, best rearrangement setting 13
+Bootstrap[95]: Time 13.112246 seconds, bootstrap likelihood -43693.185411, best rearrangement setting 15
+Bootstrap[96]: Time 10.356265 seconds, bootstrap likelihood -43353.352551, best rearrangement setting 6
+Bootstrap[97]: Time 10.938241 seconds, bootstrap likelihood -43701.502358, best rearrangement setting 10
+Bootstrap[98]: Time 13.669743 seconds, bootstrap likelihood -48547.509768, best rearrangement setting 14
+Bootstrap[99]: Time 11.104982 seconds, bootstrap likelihood -45441.646211, best rearrangement setting 8
+
+
+Overall Time for 100 Rapid Bootstraps 1191.550820 seconds
+Average Time per Rapid Bootstrap 11.915508 seconds
+
+Starting ML Search ...
+
+Fast ML optimization finished
+
+Fast ML search Time: 1357.988864 seconds
+
+Slow ML Search 0 Likelihood: -45583.955082
+Slow ML Search 1 Likelihood: -45581.939873
+Slow ML Search 2 Likelihood: -45585.658527
+Slow ML Search 3 Likelihood: -45594.208523
+Slow ML Search 4 Likelihood: -45586.874235
+Slow ML Search 5 Likelihood: -45582.124453
+Slow ML Search 6 Likelihood: -45583.228554
+Slow ML Search 7 Likelihood: -45592.527507
+Slow ML Search 8 Likelihood: -45592.200604
+Slow ML Search 9 Likelihood: -45589.201065
+Slow ML optimization finished
+
+Slow ML search Time: 1228.706615 seconds
+Thorough ML search Time: 70.179841 seconds
+
+Final ML Optimization Likelihood: -45581.711996
+
+Model Information:
+
+Model Parameters of Partition 0, Name: No Name Provided, Type of Data: DNA
+alpha: 0.466143
+Tree-Length: 12.227763
+rate A <-> C: 0.596828
+rate A <-> G: 3.055069
+rate A <-> T: 1.283825
+rate C <-> G: 0.378871
+rate C <-> T: 5.821675
+rate G <-> T: 1.000000
+
+freq pi(A): 0.278537
+freq pi(C): 0.192738
+freq pi(G): 0.273146
+freq pi(T): 0.255579
+
+
+ML search took 2656.893644 secs or 0.738026 hours
+
+Combined Bootstrap and ML search took 3848.445659 secs or 1.069013 hours
+
+Drawing Bootstrap Support Values on best-scoring ML tree ...
+
+
+
+Found 1 tree in File /home/adirks/projects/amf_metabarcoding/RAxML_bestTree.amf_phylogeny_glomeromycotina
+
+
+
+Found 1 tree in File /home/adirks/projects/amf_metabarcoding/RAxML_bestTree.amf_phylogeny_glomeromycotina
+
+Program execution info written to /home/adirks/projects/amf_metabarcoding/RAxML_info.amf_phylogeny_glomeromycotina
+All 100 bootstrapped trees written to: /home/adirks/projects/amf_metabarcoding/RAxML_bootstrap.amf_phylogeny_glomeromycotina
+
+Best-scoring ML tree written to: /home/adirks/projects/amf_metabarcoding/RAxML_bestTree.amf_phylogeny_glomeromycotina
+
+Best-scoring ML tree with support values written to: /home/adirks/projects/amf_metabarcoding/RAxML_bipartitions.amf_phylogeny_glomeromycotina
+
+Best-scoring ML tree with support values as branch labels written to: /home/adirks/projects/amf_metabarcoding/RAxML_bipartitionsBranchLabels.amf_phylogeny_glomeromycotina
+
+Overall execution time for full ML analysis: 3848.661073 secs or 1.069073 hours or 0.044545 days
+

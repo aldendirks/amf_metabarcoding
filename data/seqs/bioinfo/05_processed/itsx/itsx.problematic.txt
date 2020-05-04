@@ -1,0 +1,14 @@
+ASV_43	End of SSU sequence not found
+ASV_264	End of 5.8S sequence not found
+ASV_335	End of 5.8S sequence not found
+ASV_342	End of 5.8S sequence not found
+ASV_367	End of 5.8S sequence not found
+ASV_373	End of 5.8S sequence not found
+ASV_383	End of 5.8S sequence not found
+ASV_399	End of SSU sequence not found
+ASV_404	End of 5.8S sequence not found
+ASV_429	End of 5.8S sequence not found
+ASV_430	End of 5.8S sequence not found
+ASV_437	End of 5.8S sequence not found
+ASV_451	End of 5.8S sequence not found
+ASV_454	End of 5.8S sequence not found

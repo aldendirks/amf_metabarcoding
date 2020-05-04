@@ -1,0 +1,379 @@
+---
+title: "Effects of N Addition on AMF Diversity and Community Composition in WI Switchgrass Cropping Systems"
+subtitle: "ASVs"
+author: "Alden Dirks"
+date: "1/20/2019"
+output:
+  rmarkdown::html_document:
+    theme: lumen
+---
+
+# Setup
+
+```{r setup, include = FALSE}
+rm(list = ls()) # clean up environment for new session
+knitr::opts_knit$set(root.dir = '..' ) # set markdown root directory to project root
+knitr::opts_chunk$set(echo = FALSE, fig.path = '../figures/', message = FALSE, warning = FALSE, results = 'hide')
+```
+
+```{r load_libraries}
+library("ape"); packageVersion("ape") # version 5.3
+library("DESeq2"); packageVersion("DESeq2") # version 1.24.0
+library("EcoSimR"); packageVersion("EcoSimR") # version 0.1.0
+library("ggtern"); packageVersion("ggtern") # version 3.1.0
+library("indicspecies"); packageVersion("indicspecies") # version 1.7.8
+library("lme4"); packageVersion("lme4") # version 1.1.21
+library("lmerTest"); packageVersion("lmerTest") # version 3.1.0
+library("lsmeans"); packageVersion("lsmeans") # version 2.30.0
+library("MuMIn"); packageVersion("MuMIn") # version 1.43.15
+library("picante"); packageVersion("picante") # version 1.8
+library("phyloseq"); packageVersion("phyloseq") # version 1.28.0
+library("RColorBrewer"); packageVersion("RColorBrewer") # version 1.1.2
+library("Ternary"); packageVersion("Ternary") # version 1.1.3
+library("TITAN2"); packageVersion("TITAN2") # version 2.4.900
+library("tidyverse"); packageVersion("tidyverse") # version 1.2.1
+library("vegan"); packageVersion("vegan") # version 2.5.6
+library("VennDiagram"); packageVersion("VennDiagram") # version 1.6.20
+```
+
+```{r load_data}
+# set paths
+path_master <- file.path("data", "master")
+path_tax <- file.path("data", "seqs", "bioinfo", "06_filtered")
+path_tree <- file.path("data", "seqs", "phylogenetics", "raxml", "glomeromycotina")
+
+# import data
+master_asv <- read.table(file.path(path_master, "master_asv.csv"), header = TRUE, check.names = FALSE, sep = ",")
+master_asv$nitrogen <- relevel(master_asv$nitrogen, "control")
+tax_man <- as.matrix(read.table(file.path(path_tax, "ASVs_tax_manual.csv"), header = TRUE, row.names = 1, check.names = FALSE, sep = ",", na.strings = "unknown"))
+tax_unite <- as.matrix(read.table(file.path(path_tax, "ASVs_tax_unite_its.csv"), header = TRUE, row.names = 1, check.names = FALSE, sep = ",", na.strings = "unknown"))
+tax_unite[tax_unite == "NA"] <- NA
+phy_tree <- read.tree(file.path(path_tree, "RAxML_bipartitions.amf_phylogeny_glomeromycotina"))
+rooted_phy_tree <- root(phy_tree, outgroup = 182, resolve.root = TRUE)
+
+# creat phloseq object
+physeq_man <- phyloseq(otu_table(master_asv[,36:471], taxa_are_rows = FALSE), tax_table(tax_man), sample_data(master_asv[,1:35]), phy_tree(rooted_phy_tree))
+physeq_unite <- phyloseq(otu_table(master_asv[,36:471], taxa_are_rows = FALSE), tax_table(tax_unite), sample_data(master_asv[,1:35]), phy_tree(rooted_phy_tree))
+
+# set seed for reproducibility
+set.seed(19930327)
+```
+
+# Rarefaction Curves
+
+To determine the completeness of our sampling efforts, we plotted rarefaction curves for the 22 plots. According to rarefaction curves, ASV richness reached a clear asymptote across all samples suggesting our sequencing depth was sufficient to recover most ASVs.  
+
+```{r rarefaction_curve}
+rarecurve(master_asv[,36:471], step=100, label = FALSE)
+```
+
+# Taxonomic Diversity
+
+## Manual
+
+```{r taxonomy_manu, eval = FALSE}
+table(tax_man[,2]) # phylum
+table(tax_man[,4]) # order
+table(tax_man[,5]) # family
+table(tax_man[,6]) # genus
+table(tax_man[,7]) # species
+```
+
+```{r stacked_barplot_tax_man}
+plot_bar(physeq_man, x = "site:nitrogen", fill = "Binomial") + geom_bar(aes(color = Binomial, fill = Binomial), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+plot_bar(physeq_man, x = "site:nitrogen", fill = "Genus") + geom_bar(aes(color = Genus, fill = Genus), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+plot_bar(physeq_man, x = "site:nitrogen", fill = "Family") + geom_bar(aes(color = Family, fill = Family), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+plot_bar(physeq_man, x = "site:nitrogen", fill = "Order") + geom_bar(aes(color = Order, fill = Order), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+```
+
+## UNITE 
+
+```{r taxonomy_unite, eval = FALSE}
+table(tax_unite[,2]) # phylum
+table(tax_unite[,4]) # order
+table(tax_unite[,5]) # family
+table(tax_unite[,6]) # genus
+table(tax_unite[,7]) # species
+```
+
+```{r stacked_barplot_tax_unite}
+plot_bar(physeq_unite, x = "site:nitrogen", fill = "Binomial") + geom_bar(aes(color = Binomial, fill = Binomial), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15))
+plot_bar(physeq_unite, x = "site:nitrogen", fill = "Genus") + geom_bar(aes(color = Genus, fill = Genus), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+plot_bar(physeq_unite, x = "site:nitrogen", fill = "Family") + geom_bar(aes(color = Family, fill = Family), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+plot_bar(physeq_unite, x = "site:nitrogen", fill = "Order") + geom_bar(aes(color = Order, fill = Order), stat = "identity", position = "stack") + labs(x = "Site and Nitrogen Treatment") + theme(text = element_text(size = 15)) 
+```
+
+# Venn Diagrams
+
+Create a list of three vectors (one for each site) with the ASVs that occur in each site. See this [tutorial](https://www.r-graph-gallery.com/14-venn-diagramm.html) for more information. 
+
+```{r venn}
+# create vectors with all the ASVs occurring at each site
+asvs_h <- names(which(colSums(subset(master_asv, site == "Hancock")[,36:471]) > 0))
+asvs_o <- names(which(colSums(subset(master_asv, site == "Oregon")[,36:471]) > 0))
+asvs_r <- names(which(colSums(subset(master_asv, site == "Rhinelander")[,36:471]) > 0))
+
+# make Venn Diagram for ASVs
+venn_color <- brewer.pal(3, "Pastel2") # choose a "qualitative palette" from ColorBrewer
+venn.diagram(
+  x = list(asvs_h, asvs_o, asvs_r),
+  filename = "figures/venn_diagramm_asvs.tiff",
+  imagetype = "tiff",
+  height = 3000, 
+  width = 3000,
+  resolution = 500,
+  compression = "lzw",
+  category.names = c("Hancock", "Oregon", "Rhinelander"),
+  cat.fontface = "bold",
+  cat.fontfamily = "sans",
+  cat.pos = c(-15, 15, 0), # Oregon, Rhinelander, Hancock
+  cat.dist = c(0.05, 0.05, 0.04), # Hancock, Oregon, Rhinelander
+  fontfamily = "sans",
+  lwd = 3, # width of each circle's circumferences, 1-5
+  col = venn_color, # color of circumference
+  fill = venn_color, # color of circle
+  alpha = 0.30
+)
+```
+
+# Linear Mixed Effects Models 
+
+## Effect of Nitrogen on Response Variables
+
+A LMER model analyzing the effects of nitrogen on switchgrass yield violated the assumptino of homoscedasticity (equal variance of the errors). We square-root transformed switchgrass yield to fix this error. There was a significant N treatment x site effect on square-root-transformed switchgrass yield ($F_{2,8} = 14.039$, $p = 0.0024$). Yield at Rhinelander was significantly augmented by N addition ($T_8 = 5.925$, $p = 0.0032$), but not at Hancock ($t_8 = 1.212$, $p = 0.8206$) or Oregon ($t_8 = -1.522$, $p = 0.6621$). 
+
+```{r lmer_yield}
+# yield
+#lmer_yield <- lmer(yield ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_yield); plot(lmer_yield); qqnorm(resid(lmer_yield)); qqline(resid(lmer_yield)) # homoscedasticity violated
+lmer_yield <- lmer(sqrt(yield) ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_yield); plot(lmer_yield); qqnorm(resid(lmer_yield)); qqline(resid(lmer_yield)) # significant site:nitrogen effect
+summary(lmer_yield)
+lsmeans(lmer_yield, pairwise ~ site)
+  ggplot(data = master_asv, aes(x = site, y = yield)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "Yield (Mg/ha)", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+```
+
+```{r lmer_soil}
+# pH
+lmer_ph <- lmer(ph ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_ph); plot(lmer_ph); qqnorm(resid(lmer_ph)); qqline(resid(lmer_ph)) # significant site
+lsmeans(lmer_ph, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = ph)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "pH", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# cation exchange capacity
+lmer_est_cec <- lmer(est_cec ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_est_cec); plot(lmer_est_cec); qqnorm(resid(lmer_est_cec)); qqline(resid(lmer_est_cec))
+lsmeans(lmer_est_cec, pairwise ~ site) # significant site
+ggplot(data = master_asv, aes(x = site, y = est_cec)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "Cation Exchange Capacity (cmol/kg)", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# P
+#lmer_p_ppm <- lmer(p_ppm ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_p_ppm); plot(lmer_p_ppm); qqnorm(resid(lmer_p_ppm)); qqline(resid(lmer_p_ppm)) # heteroscedastic
+lmer_p_ppm <- lmer(log(p_ppm) ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_p_ppm); plot(lmer_p_ppm); qqnorm(resid(lmer_p_ppm)); qqline(resid(lmer_p_ppm)) # significant site
+lsmeans(lmer_p_ppm, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = p_ppm)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "Total P (ppm)", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# C
+lmer_per_C <- lmer(per_C ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_per_C); plot(lmer_per_C); qqnorm(resid(lmer_per_C)); qqline(resid(lmer_per_C))
+lsmeans(lmer_per_C, pairwise ~ site) # significant site
+ggplot(data = master_asv, aes(x = site, y = per_C)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "Total C (%)", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# N
+lmer_per_N <- lmer(per_N ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_per_N); plot(lmer_per_N); qqnorm(resid(lmer_per_N)); qqline(resid(lmer_per_N)) # significant site
+lsmeans(lmer_per_N, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = per_N)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "Total N (%)", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# C:N Ratio
+lmer_cn_ratio <- lmer(cn_ratio ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_cn_ratio); plot(lmer_cn_ratio); qqnorm(resid(lmer_cn_ratio)); qqline(resid(lmer_cn_ratio)) # significant site
+lsmeans(lmer_cn_ratio, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = cn_ratio)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "C:N Ratio", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30))
+```
+
+```{r lmer_div}
+# sequences
+lmer_n <- lmer(n ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_n); plot(lmer_n); qqnorm(resid(lmer_n)); qqline(resid(lmer_n)) # marginally significant site:nitrogen
+# richness
+lmer_rich <- lmer(rich ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_rich); plot(lmer_rich); qqnorm(resid(lmer_rich)); qqline(resid(lmer_rich)) # significant site
+lsmeans(lmer_rich, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = rich)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Richness", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# Shannon's diveristy
+lmer_div_shan <- lmer(div_shan ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_div_shan); plot(lmer_div_shan); qqnorm(resid(lmer_div_shan)); qqline(resid(lmer_div_shan)) # marginally significant site
+ggplot(data = master_asv, aes(x = site, y = div_shan)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Shannon Diversity Index", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# Simpson diversity
+lmer_div_simp <- lmer(div_simp ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_div_simp); plot(lmer_div_simp); qqnorm(resid(lmer_div_simp)); qqline(resid(lmer_div_simp)) # marginally significant site
+ggplot(data = master_asv, aes(x = site, y = div_simp)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Simpson's Diversity Index", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# evenness
+lmer_even_H <- lmer(even_H ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_even_H); plot(lmer_even_H); qqnorm(resid(lmer_even_H)); qqline(resid(lmer_even_H))
+ggplot(data = master_asv, aes(x = site, y = even_H)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Pielou's Evenness Index", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 30)) 
+# Faith PD
+lmer_pd <- lmer(faith ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_pd); plot(lmer_pd); qqnorm(resid(lmer_pd)); qqline(resid(lmer_pd)) # significant site
+lsmeans(lmer_pd, pairwise ~ site)
+ggplot(data = master_asv, aes(x = site, y = faith)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Faith's Phylogenetic Diversity Index", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 20)) 
+# mean pairwise distance
+lmer_mpd <- lmer(mpd ~ site*nitrogen + (1|block:site), data = master_asv[-20,]); anova(lmer_mpd); plot(lmer_mpd); qqnorm(resid(lmer_mpd)); qqline(resid(lmer_mpd)) # marginally significant site
+ggplot(data = master_asv, aes(x = site, y = mpd)) + geom_boxplot(aes(fill = nitrogen)) + labs(x = "Site", y = "ASV Phylogenetic Mean Pairwise Distance", fill = "N Treatment") + scale_fill_discrete(labels = c("Control", "Amended")) + theme(text = element_text(size = 20)) 
+```
+
+## Correlations Between Yield and AMF ASV Diversity
+
+```{r subset_data}
+master_asv_h <- subset(master_asv, site == "Hancock")
+master_asv_o <- subset(master_asv, site == "Oregon")
+master_asv_r <- subset(master_asv, site == "Rhinelander")
+```
+
+```{r lmer_cor_div}
+# asv richness
+lmer_h <- lmer(yield ~ nitrogen + rich + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + rich + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + rich + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant richness
+# asv rarefied richness
+lmer_h <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant rarefied richness
+# div_shan
+lmer_h <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant Shannon diveristy
+# div_simp
+lmer_h <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# evenness
+lmer_h <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# faith's phylogenetic diversity
+lmer_h <- lmer(yield ~ nitrogen + faith + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + faith + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o)) # marginally significant faith
+lmer_r <- lmer(yield ~ nitrogen + faith + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant faith
+# mean pairwise distance
+lmer_h <- lmer(yield ~ nitrogen + mpd + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + mpd + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + mpd + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+```
+
+```{r lmer_cor_soil}
+# soil pH
+lmer_h <- lmer(yield ~ nitrogen + ph + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + ph + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + ph + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant pH
+# phosphorus
+lmer_h <- lmer(yield ~ nitrogen + p_ppm + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + p_ppm + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + p_ppm + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# cation exchange capacity
+lmer_h <- lmer(yield ~ nitrogen + est_cec + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h)) # significant CEC
+r.squaredGLMM(lmer_h)
+lmer_o <- lmer(yield ~ nitrogen + est_cec + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + est_cec + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant CEC
+# percent N
+lmer_h <- lmer(yield ~ nitrogen + per_N + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h)) # marginally significant percent N
+lmer_o <- lmer(yield ~ nitrogen + per_N + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o)) # marginally significant percent N
+lmer_r <- lmer(yield ~ nitrogen + per_N + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r)) # marginally significant percent N
+# percent C
+lmer_h <- lmer(yield ~ nitrogen + per_C + (1|block), data = master_asv_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h)) # marginally significant percent C
+lmer_o <- lmer(yield ~ nitrogen + per_C + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + per_C + (1|block), data = master_asv_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# C:N ratio
+lmer_h <- lmer(yield ~ nitrogen + cn_ratio + (1|block), data = master_asv_h);  anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + cn_ratio + (1|block), data = master_asv_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o)) # marginally significant C:N ratio
+lmer_r <- lmer(yield ~ nitrogen + cn_ratio + (1|block), data = master_asv_r); summary(lmer_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+```
+
+# PERMANOVA
+
+```{r}
+# Bray-Curtis
+perm_mod_asv <- adonis(master_asv[,36:471] ~ nitrogen, strata = master_asv$site, data = master_asv)
+perm_mod_asv
+# UniFrac
+uni_asv <- UniFrac(physeq_man, weighted = TRUE, normalized = TRUE, parallel = FALSE, fast = TRUE)
+perm_mod_asv <- adonis(uni_asv ~ nitrogen, strata = master_asv$site, data = master_asv)
+perm_mod_asv
+```
+
+# Indicator Species Analysis
+
+In indicator species analysis, two indicator value components are calculated:
+
+* Component ‘A’ is sample estimate of the probability that the surveyed site belongs to the target site group given the fact that the species has been found. This conditional probability is called the specificity or positive predictive value of the species as indicator of the site group. SO you find this species somewhere, what is the probability that somewhere is part of that group becasue you found it? 
+* Component ‘B’ is sample estimate of the probability of finding the species in sites belonging to the site group. This second conditional probability is called the fidelity or sensitivity of the species as indicator of the target site group. SO you are somewhere, what is the probability that you will find that species? 
+
+```{r isa}
+# indicators of nitrogen
+indval_n <- multipatt(master_asv[,36:471], master_asv$nitrogen, control = how(nperm = 999))
+summary(indval_n)
+# indicators of site
+indval_site <- multipatt(master_asv[,36:471], master_asv$site, control = how(nperm = 999))
+summary(indval_site, indvalcomp = TRUE)
+```
+
+No ASVs are indicators of nitrogen treatment, but some are of site. 
+
+**Hancock**
+
+* ASV 18 - Paraglomus brasilianum (p = 0.001)
+* ASV 5 - Paraglomus brasilianum (p = 0.005)
+* ASV 98 - Microdominikia litorea (p = 0.019)
+* ASV 114 - Paraglomus brasilianum (p = 0.014)
+* ASV 139 - Microdominikia litorea (p = 0.019)
+
+**Oregon**
+
+* ASV 63 - Paraglomus laccatum (p = 0.018)
+* ASV 149 - Scutellospora calospora (p = 0.026)
+* ASV 186 - Rhizoglomus sp. 4 (p = 0.013)
+* ASV 41 - Paraglomus laccatum (p = 0.023)
+
+**Rhinelander**
+
+* ASV 6 - Paraglomus brasilianum (p = 0.001)
+* ASV 1 - Glomeraceae sp. 4 (p = 0.020)
+* ASV 12 - Paraglomus brasilianum (p = 0.020)
+* ASV 65 - Paraglomus brasilianum (p = 0.026)
+
+# UniFrac Beta Diveristy
+
+```{r unifrac}
+ord_nmds <- ordinate(physeq_man, "NMDS", "unifrac", weighted = TRUE)
+ord_nmds$stress
+plot_ordination(physeq_man, ord_nmds, color = "site", shape = "nitrogen") + geom_point(aes(size = sample_data(physeq_man)$yield), alpha = 0.75) + scale_colour_brewer(type = "qual", palette = "Set1") + ggtitle("NMDS on weighted-UniFrac distance of AMF ASV communities") + theme(text = element_text(size = 30)) + labs(size = "Yield", color = "Site", shape = "N Treatment") + scale_size(range = c(3, 12)) + geom_line(aes(group = site:block))
+env_fit <- envfit(ord_nmds, master_asv[,8:13])
+summary(env_fit)
+master_asv$nmds1 <- unname(ord_nmds$points[,1])
+master_asv$nmds2 <- unname(ord_nmds$points[,2])
+```
+
+# Mantel Test
+
+```{r}
+# dissimilarity matrices
+dist_asv <- vegdist(master_asv[,36:471])
+dist_ph <- vegdist(master_asv[,8])
+dist_p <- vegdist(master_asv[,9])
+dist_cec <- vegdist(master_asv[,10])
+dist_n <- vegdist(master_asv[,11])
+dist_np <- vegdist(master_asv[,9]*master_asv[,11])
+dist_c <- vegdist(master_asv[,12])
+dist_cn <- vegdist(master_asv[,13])
+dist_soil <- vegdist(master_asv[,8:13])
+
+# mantel tests (unifrac) - constrain by site
+mantel(uni_asv, dist_ph, strata = master_asv$site) # not significant
+mantel(uni_asv, dist_p, strata = master_asv$site) # not significant
+mantel(uni_asv, dist_cec, strata = master_asv$site) # not to marginally significant
+mantel(uni_asv, dist_n, strata = master_asv$site) # highly significant
+mantel(uni_asv, dist_np, strata = master_asv$site) # significant to highly significant
+mantel(uni_asv, dist_c, strata = master_asv$site) # significant
+mantel(uni_asv, dist_cn, strata = master_asv$site) # not significant
+mantel(uni_asv, dist_soil, strata = master_asv$site) # marginally significant
+
+# mantel tests (bray) - constrain by site
+mantel(dist_asv, dist_ph, strata = master_asv$site) # highly significant
+mantel(dist_asv, dist_p, strata = master_asv$site) # not significant
+mantel(dist_asv, dist_cec, strata = master_asv$site) # not to marginally significant
+mantel(dist_asv, dist_n, strata = master_asv$site) # marginally significant
+mantel(dist_asv, dist_np, strata = master_asv$site) # not significant
+mantel(dist_asv, dist_c, strata = master_asv$site) # significant
+mantel(dist_asv, dist_cn, strata = master_asv$site) # not significant
+mantel(dist_asv, dist_soil, strata = master_asv$site) # not significant
+```
+
+# LMER of NMDS Coordinates
+
+```{r}
+lmer_nmds1 <- lmer(nmds1 ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_nmds1); plot(lmer_nmds1); qqnorm(resid(lmer_nmds1)); qqline(resid(lmer_nmds1)) # significant site effect
+lmer_nmds2 <- lmer(nmds2 ~ site*nitrogen + (1|block:site), data = master_asv); anova(lmer_nmds2); plot(lmer_nmds2); qqnorm(resid(lmer_nmds2)); qqline(resid(lmer_nmds2))
+```
+

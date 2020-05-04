@@ -1,0 +1,161 @@
+---
+title: "Effects of N Addition on AMF Diversity and Community Composition in WI Switchgrass Cropping Systems"
+subtitle: "Species"
+author: "Alden Dirks"
+date: "1/20/2019"
+output:
+  rmarkdown::html_document:
+    theme: lumen
+---
+
+# Setup
+
+```{r setup, include = FALSE}
+rm(list = ls()) # clean up environment for new session
+knitr::opts_knit$set(root.dir = '..' ) # set markdown root directory to project root
+knitr::opts_chunk$set(echo = FALSE, fig.path = '../figures/', message = FALSE, warning = FALSE, results = 'hide')
+```
+
+```{r load_libraries}
+library("ape"); packageVersion("ape") # version 5.3
+library("DESeq2"); packageVersion("DESeq2") # version 1.24.0
+library("EcoSimR"); packageVersion("EcoSimR") # version 0.1.0
+library("ggtern"); packageVersion("ggtern") # version 3.1.0
+library("indicspecies"); packageVersion("indicspecies") # version 1.7.8
+library("lme4"); packageVersion("lme4") # version 1.1.21
+library("lmerTest"); packageVersion("lmerTest") # version 3.1.0
+library("lsmeans"); packageVersion("lsmeans") # version 2.30.0
+library("picante"); packageVersion("picante") # version 1.8
+library("phyloseq"); packageVersion("phyloseq") # version 1.28.0
+library("RColorBrewer"); packageVersion("RColorBrewer") # version 1.1.2
+library("Ternary"); packageVersion("Ternary") # version 1.1.3
+library("TITAN2"); packageVersion("TITAN2") # version 2.4.900
+library("tidyverse"); packageVersion("tidyverse") # version 1.2.1
+library("vegan"); packageVersion("vegan") # version 2.5.6
+library("VennDiagram"); packageVersion("VennDiagram") # version 1.6.20
+```
+
+```{r load_data}
+# set paths
+path_master <- file.path("data", "master")
+
+# import data
+master_order <- read.table(file.path(path_master, "master_order.csv"), header = TRUE, check.names = FALSE, sep = ",")
+master_order$nitrogen <- relevel(master_order$nitrogen, "control")
+
+# creat phloseq object
+physeq <- phyloseq(otu_table(master_order[,34:37], taxa_are_rows = FALSE), sample_data(master_order[,1:33]))
+
+# set seed for reproducibility
+set.seed(19930327)
+```
+
+# Rarefaction Curves
+
+```{r rarefaction_curve}
+rarecurve(master_order[,34:37], step=100)
+```
+
+# Linear Mixed Effects Models 
+
+## Effect of Nitrogen on Response Variables
+
+```{r lmer_div}
+# richness
+lmer_rich <- lmer(rich ~ site*nitrogen + (1|block:site), data = master_order); anova(lmer_rich); plot(lmer_rich); qqnorm(resid(lmer_rich)); qqline(resid(lmer_rich))
+# Shannon's diveristy
+lmer_div_shan <- lmer(div_shan ~ site*nitrogen + (1|block:site), data = master_order); anova(lmer_div_shan); plot(lmer_div_shan); qqnorm(resid(lmer_div_shan)); qqline(resid(lmer_div_shan))
+# Simpson diversity
+lmer_div_simp <- lmer(div_simp ~ site*nitrogen + (1|block:site), data = master_order); anova(lmer_div_simp); plot(lmer_div_simp); qqnorm(resid(lmer_div_simp)); qqline(resid(lmer_div_simp))
+# evenness
+lmer_even_H <- lmer(even_H ~ site*nitrogen + (1|block:site), data = master_order); anova(lmer_even_H); plot(lmer_even_H); qqnorm(resid(lmer_even_H)); qqline(resid(lmer_even_H))
+```
+
+## Relationship Between Yield and AMF ASV Diversity
+
+```{r subset_data}
+master_order_h <- subset(master_order, site == "Hancock")
+master_order_o <- subset(master_order, site == "Oregon")
+master_order_r <- subset(master_order, site == "Rhinelander")
+```
+
+```{r lmer_cor}
+# sequences
+lmer_h <- lmer(yield ~ nitrogen + n + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + n + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + n + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# richness
+lmer_h <- lmer(yield ~ nitrogen + rich + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + rich^2 + rich + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + rich + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# asv rarefied richness
+lmer_h <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + rich_rar + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# div_shan
+lmer_h <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + div_shan + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# div_simp
+lmer_h <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + div_simp + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+# evenness
+lmer_h <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_order_h); anova(lmer_h); plot(lmer_h); qqnorm(resid(lmer_h)); qqline(resid(lmer_h))
+lmer_o <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_order_o); anova(lmer_o); plot(lmer_o); qqnorm(resid(lmer_o)); qqline(resid(lmer_o))
+lmer_r <- lmer(yield ~ nitrogen + even_H + (1|block), data = master_order_r); anova(lmer_r); plot(lmer_r); qqnorm(resid(lmer_r)); qqline(resid(lmer_r))
+```
+
+# PERMANOVA
+
+```{r}
+# Bray-Curtis
+perm_mod_asv <- adonis(master_order[,34:37] ~ nitrogen, strata = master_order$site, data = master_order)
+perm_mod_asv
+```
+
+# Indicator Species Analysis
+
+In indicator species analysis, two indicator value components are calculated:
+
+* Component ‘A’ is sample estimate of the probability that the surveyed site belongs to the target site group given the fact that the species has been found. This conditional probability is called the specificity or positive predictive value of the species as indicator of the site group. SO you find this species somewhere, what is the probability that somewhere is part of that group becasue you found it? 
+* Component ‘B’ is sample estimate of the probability of finding the species in sites belonging to the site group. This second conditional probability is called the fidelity or sensitivity of the species as indicator of the target site group. SO you are somewhere, what is the probability that you will find that species? 
+
+```{r isa}
+# indicators of nitrogen
+indval_n <- multipatt(master_order[,34:37], master_order$nitrogen, control = how(nperm = 999))
+summary(indval_n)
+# indicators of site
+indval_site <- multipatt(master_order[,34:37], master_order$site, control = how(nperm = 999))
+summary(indval_site, indvalcomp = TRUE)
+```
+
+Hancock
+
+* 
+
+Oregon
+
+*
+
+Rhinelander
+
+* 
+
+# Ternary Plot
+
+```{r ternary}
+df_ternary <- master_order[,c(1, 34:37)] %>% 
+  group_by(site) %>%
+  summarise_all(~sum(.))
+df_ternary <- t(df_ternary)
+colnames(df_ternary) <- as.character(unlist(df_ternary[1,]))
+df_ternary <- df_ternary[-1,]
+df_ternary <- apply(df_ternary, 2, FUN = as.numeric)
+df_ternary <- sweep(df_ternary, 1, rowSums(df_ternary), FUN="/")
+df_ternary <- df_ternary*100
+df_ternary <- as.data.frame(df_ternary)
+rownames(df_ternary) <- colnames(master_order[,34:37])
+ggtern(data = df_ternary, aes(x=Hancock, y=Oregon, z=Rhinelander)) + geom_point(aes(size = colSums(master_order[,34:37]))) + labs(x = "H", y = "O",z = "R") + geom_crosshair_tern(aes(alpha = colSums(master_order[,34:37]))) + theme(text = element_text(size = 30)) 
+```
+
