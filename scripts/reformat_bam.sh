@@ -15,12 +15,29 @@
 
 ####################################################################################################
 
+# download and unpack BBMap
+cd bin
+wget "https://sourceforge.net/projects/bbmap/files/BBMap_38.82.tar.gz"
+tar -xzf BBMap_38.82.tar.gz
+rm BBMap_38.82.tar.gz
+export PATH=${PATH}:$PWD/bbmap
+
+# download and unpack SAM tools (to process BAM files)
+wget "https://sourceforge.net/projects/samtools/files/samtools-1.10.tar.bz2"
+tar -xzf samtools-1.10.tar.bz2
+rm samtools-1.10.tar.bz2
+export PATH=${PATH}:$PWD/samtools-1.10
+cd ..
+
+# reformat BAM files 
+mkdir data/seqs/bioinfo/fastq
 for i in {1..9}
 do
-   reformat.sh in=data/seqs/bioinfo/03_ccs/ccs_lbc0$i.bam out=data/seqs/bioinfo/04_fastq/ccs_lbc0$i.fastq
+   reformat.sh in=data/seqs/bioinfo/bam/ccs_lbc0$i.bam out=data/seqs/bioinfo/fastq/ccs_lbc0$i.fastq
 done
-
 for i in {10..48}
 do
-   reformat.sh in=data/seqs/bioinfo/03_ccs/ccs_lbc$i.bam out=data/seqs/bioinfo/04_fastq/ccs_lbc$i.fastq
+   reformat.sh in=data/seqs/bioinfo/bam/ccs_lbc$i.bam out=data/seqs/bioinfo/fastq/ccs_lbc$i.fastq
 done
+
+reformat.sh in=data/seqs/bioinfo/bam/ccs_lbc01.bam out=data/seqs/bioinfo/fastq/ccs_lbc01.fastq
